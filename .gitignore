@@ -1,0 +1,27 @@
+# 로그
+*.log
+npm-debug.log*
+
+# 의존성
+node_modules/
+
+# 빌드 산출물
+dist/
+dist-ssr/
+*.local
+
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# 에디터
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# 캐시
+.cache/
+tmp/

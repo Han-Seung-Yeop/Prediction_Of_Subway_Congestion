@@ -1,0 +1,256 @@
+{
+  "count": 25,
+  "coordinate_system": "Y-up (Three.js/glTF)",
+  "markers": [
+    {
+      "id": "10번",
+      "type": "10번",
+      "number": null,
+      "position": {
+        "x": 0.1443,
+        "y": 0.2372,
+        "z": -0.5065
+      }
+    },
+    {
+      "id": "11번",
+      "type": "11번",
+      "number": null,
+      "position": {
+        "x": 0.1591,
+        "y": 0.2953,
+        "z": 0.5718
+      }
+    },
+    {
+      "id": "12번",
+      "type": "12번",
+      "number": null,
+      "position": {
+        "x": 0.1575,
+        "y": 0.2042,
+        "z": 0.818
+      }
+    },
+    {
+      "id": "1번",
+      "type": "1번",
+      "number": null,
+      "position": {
+        "x": -0.1655,
+        "y": 0.2094,
+        "z": 0.8271
+      }
+    },
+    {
+      "id": "2번",
+      "type": "2번",
+      "number": null,
+      "position": {
+        "x": -0.1573,
+        "y": 0.2902,
+        "z": 0.569
+      }
+    },
+    {
+      "id": "3번",
+      "type": "3번",
+      "number": null,
+      "position": {
+        "x": -0.1376,
+        "y": 0.2372,
+        "z": -0.5064
+      }
+    },
+    {
+      "id": "4번",
+      "type": "4번",
+      "number": null,
+      "position": {
+        "x": -0.9644,
+        "y": 0.2677,
+        "z": -0.5849
+      }
+    },
+    {
+      "id": "5번",
+      "type": "5번",
+      "number": null,
+      "position": {
+        "x": -0.9498,
+        "y": 0.2634,
+        "z": -0.801
+      }
+    },
+    {
+      "id": "6번",
+      "type": "6번",
+      "number": null,
+      "position": {
+        "x": -0.1459,
+        "y": 0.2405,
+        "z": -0.8099
+      }
+    },
+    {
+      "id": "7번",
+      "type": "7번",
+      "number": null,
+      "position": {
+        "x": 0.1515,
+        "y": 0.2526,
+        "z": -0.827
+      }
+    },
+    {
+      "id": "8번",
+      "type": "8번",
+      "number": null,
+      "position": {
+        "x": 0.9394,
+        "y": 0.2619,
+        "z": -0.7961
+      }
+    },
+    {
+      "id": "9번",
+      "type": "9번",
+      "number": null,
+      "position": {
+        "x": 0.9508,
+        "y": 0.2762,
+        "z": -0.5877
+      }
+    },
+    {
+      "id": "Customer Service Center1",
+      "type": "Customer Service Center",
+      "number": 1,
+      "position": {
+        "x": 0.1127,
+        "y": 0.116,
+        "z": 0.3799
+      }
+    },
+    {
+      "id": "Customer Service Center2",
+      "type": "Customer Service Center",
+      "number": 2,
+      "position": {
+        "x": -0.2401,
+        "y": 0.1188,
+        "z": -0.7279
+      }
+    },
+    {
+      "id": "elevator1",
+      "type": "elevator",
+      "number": 1,
+      "position": {
+        "x": 0.0865,
+        "y": 0.3878,
+        "z": -0.6961
+      }
+    },
+    {
+      "id": "elevator2",
+      "type": "elevator",
+      "number": 2,
+      "position": {
+        "x": 0.1217,
+        "y": 0.1713,
+        "z": 0.0497
+      }
+    },
+    {
+      "id": "elevator3",
+      "type": "elevator",
+      "number": 3,
+      "position": {
+        "x": -0.1384,
+        "y": 0.1764,
+        "z": 0.0479
+      }
+    },
+    {
+      "id": "toliet1",
+      "type": "toliet",
+      "number": 1,
+      "position": {
+        "x": -0.1165,
+        "y": 0.1255,
+        "z": -0.0303
+      }
+    },
+    {
+      "id": "toliet2",
+      "type": "toliet",
+      "number": 2,
+      "position": {
+        "x": -0.1449,
+        "y": -0.132,
+        "z": -0.7411
+      }
+    },
+    {
+      "id": "turnstile1",
+      "type": "turnstile",
+      "number": 1,
+      "position": {
+        "x": -0.1126,
+        "y": 0.1241,
+        "z": 0.5271
+      }
+    },
+    {
+      "id": "turnstile2",
+      "type": "turnstile",
+      "number": 2,
+      "position": {
+        "x": 0.0987,
+        "y": 0.1301,
+        "z": 0.5454
+      }
+    },
+    {
+      "id": "turnstile3",
+      "type": "turnstile",
+      "number": 3,
+      "position": {
+        "x": -0.0945,
+        "y": 0.1177,
+        "z": 0.0568
+      }
+    },
+    {
+      "id": "turnstile4",
+      "type": "turnstile",
+      "number": 4,
+      "position": {
+        "x": 0.0808,
+        "y": 0.1236,
+        "z": 0.0397
+      }
+    },
+    {
+      "id": "turnstile5",
+      "type": "turnstile",
+      "number": 5,
+      "position": {
+        "x": -0.5389,
+        "y": 0.123,
+        "z": -0.6413
+      }
+    },
+    {
+      "id": "turnstile6",
+      "type": "turnstile",
+      "number": 6,
+      "position": {
+        "x": 0.5397,
+        "y": 0.1223,
+        "z": -0.6337
+      }
+    }
+  ]
+}
