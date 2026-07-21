@@ -1,0 +1,126 @@
+{
+  "count": 12,
+  "coordinate_system": "Y-up (Three.js/glTF)",
+  "markers": [
+    {
+      "id": "1번",
+      "type": "1번",
+      "number": null,
+      "position": {
+        "x": -0.6487,
+        "y": -0.209,
+        "z": -0.2259
+      }
+    },
+    {
+      "id": "2번",
+      "type": "2번",
+      "number": null,
+      "position": {
+        "x": 0.8484,
+        "y": -0.2079,
+        "z": -0.2131
+      }
+    },
+    {
+      "id": "3번",
+      "type": "3번",
+      "number": null,
+      "position": {
+        "x": 0.8459,
+        "y": -0.2017,
+        "z": 0.2355
+      }
+    },
+    {
+      "id": "4번",
+      "type": "4번",
+      "number": null,
+      "position": {
+        "x": -0.6508,
+        "y": -0.205,
+        "z": 0.2114
+      }
+    },
+    {
+      "id": "Customer Service Center",
+      "type": "Customer Service Center",
+      "number": null,
+      "position": {
+        "x": 0.0961,
+        "y": -0.0039,
+        "z": -0.0891
+      }
+    },
+    {
+      "id": "elevator1",
+      "type": "elevator",
+      "number": 1,
+      "position": {
+        "x": 0.5016,
+        "y": 0.0027,
+        "z": -0.2093
+      }
+    },
+    {
+      "id": "elevator2",
+      "type": "elevator",
+      "number": 2,
+      "position": {
+        "x": 0.5092,
+        "y": 0.0135,
+        "z": 0.2287
+      }
+    },
+    {
+      "id": "elevator3",
+      "type": "elevator",
+      "number": 3,
+      "position": {
+        "x": -0.0445,
+        "y": 0.2581,
+        "z": 0.129
+      }
+    },
+    {
+      "id": "elevator4",
+      "type": "elevator",
+      "number": 4,
+      "position": {
+        "x": -0.1142,
+        "y": 0.256,
+        "z": -0.1162
+      }
+    },
+    {
+      "id": "toilet",
+      "type": "toilet",
+      "number": null,
+      "position": {
+        "x": -0.2565,
+        "y": -0.0155,
+        "z": 0.1524
+      }
+    },
+    {
+      "id": "turnstile1",
+      "type": "turnstile",
+      "number": 1,
+      "position": {
+        "x": 0.7366,
+        "y": -0.0006,
+        "z": -0.0049
+      }
+    },
+    {
+      "id": "turnstile2",
+      "type": "turnstile",
+      "number": 2,
+      "position": {
+        "x": -0.6934,
+        "y": -0.0157,
+        "z": 0.004
+      }
+    }
+  ]
+}
