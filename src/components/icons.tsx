@@ -61,6 +61,50 @@ export const IconBall = (p: IconProps) => (
   </svg>
 )
 
+/** 야구 — 공 + 좌우 실밥(안쪽으로 휘는 seam) */
+export const IconBaseball = (p: IconProps) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M8 4.8Q11.5 12 8 19.2" />
+    <path d="M16 4.8Q12.5 12 16 19.2" />
+  </svg>
+)
+
+/** 축구 — 공 + 중앙 오각형/스포크 */
+export const IconSoccer = (p: IconProps) => (
+  <svg {...base(p)}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7.6l3 2.2-1.15 3.5h-3.7L9 9.8z" />
+    <path d="M12 3.2v4.4M15 9.8l3.7-1.1M13.85 13.3l2.3 3.1M10.15 13.3l-2.3 3.1M9 9.8 5.3 8.7" />
+  </svg>
+)
+
+/** 공연(뮤지컬·연극) — 무대 마스크 */
+export const IconTheater = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M5 5h14v5a7 7 0 0 1-14 0z" />
+    <path d="M9 8.5h.01M15 8.5h.01" />
+    <path d="M9 12.4c1.5 1.3 4.5 1.3 6 0" />
+  </svg>
+)
+
+/** 전시·미술 — 액자 그림 */
+export const IconExhibit = (p: IconProps) => (
+  <svg {...base(p)}>
+    <rect x="3" y="4" width="18" height="16" rx="2" />
+    <circle cx="8.5" cy="9.5" r="1.4" />
+    <path d="M21 15l-5-4.5L6 20" />
+  </svg>
+)
+
+/** 기타 이벤트 — 티켓 */
+export const IconTicket = (p: IconProps) => (
+  <svg {...base(p)}>
+    <path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z" />
+    <path d="M14 7.5v9" strokeDasharray="1.5 2" />
+  </svg>
+)
+
 export const IconSpark = (p: IconProps) => (
   <svg {...base(p)}>
     <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" />

@@ -18,7 +18,7 @@ export const STATION_MODELS: Record<string, StationModel> = {
   's-anguk': { url: '/Anguk_Station.glb', label: '안국역' },
   's-euljiro3-l3': { url: '/Euljiro_3_ga_Station.glb', label: '을지로3가역' },
   's-euljiro3-l2': { url: '/Euljiro_3_ga_Station.glb', label: '을지로3가역' },
-  's-seongsu': { url: '/Seongsu_Station.glb', label: '성수역' },
+  's-seongsu': { url: '/Seongsu.glb', label: '성수역' },
 }
 
 /** 해당 역의 실제 glb 모델이 있는지 (없으면 Station3D 가 역삼역 예시로 대체) */

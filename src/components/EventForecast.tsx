@@ -1,11 +1,27 @@
 import type { CrowdEvent } from '../data/types'
-import { EVENTS, getLine } from '../data/subway'
-import { IconMusic, IconBall, IconSpark, IconTrendUp, IconChevron } from './icons'
+import { getLine } from '../data/subway'
+import {
+  IconMusic,
+  IconBaseball,
+  IconSoccer,
+  IconTheater,
+  IconExhibit,
+  IconTicket,
+  IconSpark,
+  IconTrendUp,
+  IconChevron,
+} from './icons'
 
-function eventIcon(type: CrowdEvent['type']) {
-  if (type === 'concert') return IconMusic
-  if (type === 'sports') return IconBall
-  return IconSpark
+/** 이벤트 유형·세부분류로 내용에 맞는 아이콘 선택 */
+function eventIcon(ev: CrowdEvent) {
+  const c = (ev.category ?? '').replace(/\s/g, '')
+  if (ev.type === 'sports') return /축구|K리그/.test(c) ? IconSoccer : IconBaseball
+  if (/전시|미술/.test(c)) return IconExhibit
+  if (/뮤지컬|연극/.test(c)) return IconTheater
+  if (/축제/.test(c)) return IconSpark
+  if (/콘서트|클래식|국악|대중음악|음악|무용|오페라|독주|독창/.test(c) || ev.type === 'concert')
+    return IconMusic
+  return IconTicket // 교육/체험·영화·기타
 }
 
 function severity(delta: number) {
@@ -15,10 +31,12 @@ function severity(delta: number) {
 }
 
 interface EventForecastProps {
+  events: CrowdEvent[]
+  loading?: boolean
   onJump?: (lineId: string, stationName: string) => void
 }
 
-export function EventForecast({ onJump }: EventForecastProps) {
+export function EventForecast({ events, loading, onJump }: EventForecastProps) {
   return (
     <section className="px-4">
       <div className="mb-2.5 flex items-center justify-between">
@@ -26,12 +44,24 @@ export function EventForecast({ onJump }: EventForecastProps) {
           <IconSpark width={16} height={16} className="text-brand-400" />
           이벤트 혼잡 예보
         </h2>
-        <span className="text-[11px] text-slate-500">공연·경기 반영</span>
+        <span className="text-[11px] text-slate-500">공연·축제·경기 반영</span>
       </div>
 
+      {loading && events.length === 0 && (
+        <div className="flex items-center gap-2 rounded-2xl bg-ink-850 p-3 text-[12px] text-slate-500 ring-1 ring-white/5">
+          <span className="h-3 w-3 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+          오늘의 이벤트 불러오는 중…
+        </div>
+      )}
+      {!loading && events.length === 0 && (
+        <div className="rounded-2xl bg-ink-850 p-3 text-center text-[12px] text-slate-500 ring-1 ring-white/5">
+          역 인근 예정 이벤트가 없어요
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
-        {EVENTS.map((ev, i) => {
-          const Icon = eventIcon(ev.type)
+        {events.map((ev, i) => {
+          const Icon = eventIcon(ev)
           const sev = severity(ev.delta)
           const line = getLine(ev.lineId)
           return (

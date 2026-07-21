@@ -1,9 +1,9 @@
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import type { RoutePlan } from '../data/types'
 import { DIRECTIONS, getLine, getStation, featuresForStation, findStationByExactName } from '../data/subway'
 import { hasStationModel } from '../data/stationModels'
-import { mockRouteProvider } from '../services/routing'
-import { mockCongestionProvider } from '../services/congestion'
+import { routeProvider, congestionProvider } from '../services'
+import { type RouteCongestion } from '../services/congestion'
 import { LEVEL_META, levelOf } from '../data/predict'
 import { ArrivalBanner, ViewToggle, type ViewMode } from '../components/Chrome'
 import { CongestionSummary, Legend } from '../components/Summary'
@@ -34,11 +34,15 @@ export function RouteView() {
   const [hour, setHour] = useState(currentHour())
   const [plan, setPlan] = useState<RoutePlan | null>(null)
   const [noRoute, setNoRoute] = useState(false)
+  const [finding, setFinding] = useState(false)
+  const [routeError, setRouteError] = useState(false)
   const [unsupportedStation, setUnsupportedStation] = useState<string | null>(null)
   const [selectedLeg, setSelectedLeg] = useState(0)
   const [view, setView] = useState<ViewMode>('3d')
   const [selectedCar, setSelectedCar] = useState<number | null>(null)
   const [interiorCar, setInteriorCar] = useState<number | null>(null)
+  const [congestion, setCongestion] = useState<RouteCongestion | null>(null)
+  const [congestionError, setCongestionError] = useState(false)
 
   const effectiveHour = useNow ? currentHour() : hour
 
@@ -60,40 +64,72 @@ export function RouteView() {
     else setToId(matched.id)
     setPlan(null)
     setNoRoute(false)
+    setRouteError(false)
   }
 
   function swap() {
     setFromId(toId)
     setToId(fromId)
     setPlan(null)
+    setNoRoute(false)
+    setRouteError(false)
   }
 
-  function find() {
+  async function find() {
     if (!fromId || !toId) return
-    const plans = mockRouteProvider.findRoutes(fromId, toId, new Date())
-    if (plans.length === 0) {
-      setPlan(null)
-      setNoRoute(true)
-      return
-    }
-    setPlan(plans[0])
+    setFinding(true)
+    setRouteError(false)
     setNoRoute(false)
-    setSelectedLeg(0)
-    setSelectedCar(null)
+    try {
+      const plans = await routeProvider.findRoutes(fromId, toId, new Date())
+      if (plans.length === 0) {
+        setPlan(null)
+        setNoRoute(true)
+        return
+      }
+      setPlan(plans[0])
+      setSelectedLeg(0)
+      setSelectedCar(null)
+    } catch {
+      setPlan(null)
+      setRouteError(true)
+    } finally {
+      setFinding(false)
+    }
   }
 
   const leg = plan?.legs[selectedLeg] ?? null
   const isFinalLeg = plan ? selectedLeg === plan.legs.length - 1 : false
 
-  const congestion = useMemo(() => {
-    if (!leg) return null
-    return mockCongestionProvider.forBoarding({
-      boardStationId: leg.boardStationId,
-      alightStationId: leg.alightStationId,
-      direction: leg.direction,
-      hour: effectiveHour,
-      isFinalLeg,
-    })
+  // 혼잡도 조회는 이제 async(실 API 대비) → 최신 요청만 반영하도록 취소 플래그 사용
+  useEffect(() => {
+    if (!leg) {
+      setCongestion(null)
+      setCongestionError(false)
+      return
+    }
+    let cancelled = false
+    setCongestionError(false)
+    congestionProvider
+      .forBoarding({
+        boardStationId: leg.boardStationId,
+        alightStationId: leg.alightStationId,
+        direction: leg.direction,
+        hour: effectiveHour,
+        isFinalLeg,
+      })
+      .then((result) => {
+        if (!cancelled) setCongestion(result)
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setCongestion(null)
+          setCongestionError(true)
+        }
+      })
+    return () => {
+      cancelled = true
+    }
   }, [leg, effectiveHour, isFinalLeg])
 
   const line = leg ? getLine(leg.lineId) : null
@@ -129,6 +165,7 @@ export function RouteView() {
         }}
         onFind={find}
         canFind={!!fromId && !!toId && fromId !== toId}
+        finding={finding}
       />
 
       <OdsaySubwayMap
@@ -150,7 +187,13 @@ export function RouteView() {
         </p>
       )}
 
-      {!plan && !noRoute && (
+      {routeError && (
+        <p className="mx-4 rounded-xl bg-ink-900/80 px-3 py-2.5 text-center text-[12px] text-rose-400 ring-1 ring-white/5">
+          경로를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.
+        </p>
+      )}
+
+      {!plan && !noRoute && !routeError && !finding && (
         <p className="mx-4 text-center text-[12px] text-slate-500">
           노선도에서 역을 탭하거나 검색해 <b className="text-slate-300">출발·도착</b>을
           정하고 <b className="text-brand-400">경로 찾기</b>를 눌러 보세요.
@@ -159,6 +202,19 @@ export function RouteView() {
 
       {plan && (
         <RouteSummary plan={plan} selectedLeg={selectedLeg} onSelectLeg={setSelectedLeg} />
+      )}
+
+      {plan && leg && !congestion && !congestionError && (
+        <div className="mx-4 flex items-center justify-center gap-2 rounded-2xl bg-ink-900/80 py-8 text-[12px] text-slate-500 ring-1 ring-white/5">
+          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-brand-500 border-t-transparent" />
+          칸별 혼잡도 불러오는 중…
+        </div>
+      )}
+
+      {plan && leg && congestionError && (
+        <p className="mx-4 rounded-xl bg-ink-900/80 px-3 py-2.5 text-center text-[12px] text-rose-400 ring-1 ring-white/5">
+          혼잡도를 불러오지 못했어요. 다른 구간을 선택하거나 잠시 후 다시 시도해 주세요.
+        </p>
       )}
 
       {plan && leg && congestion && line && boardStation && dir && (

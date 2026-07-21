@@ -1,4 +1,4 @@
-import { lazy, Suspense, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import {
   LINES,
   DIRECTIONS,
@@ -7,13 +7,20 @@ import {
   stationsByLine,
   featuresForStation,
 } from '../data/subway'
+import type { CrowdEvent } from '../data/types'
 import { hasStationModel } from '../data/stationModels'
 import { predictCongestion } from '../data/predict'
+import { eventProvider } from '../services'
 import { LineSelector, StationSelector, Controls } from '../components/Selectors'
 import { ArrivalBanner, ViewToggle, type ViewMode } from '../components/Chrome'
 import { CongestionSummary, Legend } from '../components/Summary'
 import { CarDetail } from '../components/CarDetail'
 import { EventForecast } from '../components/EventForecast'
+
+/** KST 기준 오늘 날짜(YYYY-MM-DD) */
+function todayKst(): string {
+  return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10)
+}
 
 // 3D 뷰는 three.js 번들이 커서 지연 로딩
 const Train3D = lazy(() =>
@@ -40,6 +47,28 @@ export function ExploreView() {
     setInteriorCar(car)
   }
 
+  // 오늘의 라이브 이벤트(서울 문화행사 + 네이버 스포츠). 실패 시 provider가 내부에서 목업 폴백.
+  const [events, setEvents] = useState<CrowdEvent[]>([])
+  const [eventsLoading, setEventsLoading] = useState(true)
+  useEffect(() => {
+    let cancelled = false
+    setEventsLoading(true)
+    eventProvider
+      .forDate(todayKst())
+      .then((evs) => {
+        if (!cancelled) setEvents(evs)
+      })
+      .catch(() => {
+        if (!cancelled) setEvents([])
+      })
+      .finally(() => {
+        if (!cancelled) setEventsLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const line = getLine(lineId)
   const stations = useMemo(() => stationsByLine(lineId), [lineId])
   const station = getStation(stationId) ?? stations[0]
@@ -47,9 +76,21 @@ export function ExploreView() {
   const dir = directions.find((d) => d.id === direction) ?? directions[0]
   const features = featuresForStation(station.id)
 
+  // 선택한 역·시간대에 걸리는 이벤트 boost(%p) — 같은 역 + 이벤트 시각 ±2h(종일 행사는 상시)
+  const eventBoost = useMemo(() => {
+    return events
+      .filter((e) => e.stationName === station.name && e.lineId === station.lineId)
+      .filter((e) => {
+        const m = /T(\d{2}):/.exec(e.when)
+        if (!m) return true // 시각 없는 종일 행사
+        return Math.abs(Number(m[1]) - hour) <= 2
+      })
+      .reduce((max, e) => Math.max(max, e.delta), 0)
+  }, [events, station.name, station.lineId, hour])
+
   const prediction = useMemo(
-    () => predictCongestion(station.id, hour),
-    [station.id, hour],
+    () => predictCongestion(station.id, hour, eventBoost),
+    [station.id, hour, eventBoost],
   )
 
   function handleLine(id: string) {
@@ -158,7 +199,7 @@ export function ExploreView() {
 
         <div className="mt-1 h-px bg-white/5" />
 
-        <EventForecast onJump={jumpTo} />
+        <EventForecast events={events} loading={eventsLoading} onJump={jumpTo} />
 
         <footer className="px-4 pt-2 text-center text-[10px] leading-relaxed text-slate-600">
           예측값은 역 단위 평균 혼잡도에 칸별 가중치 패턴과 이벤트 변수를 반영한

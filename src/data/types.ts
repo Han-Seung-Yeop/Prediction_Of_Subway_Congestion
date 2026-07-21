@@ -18,10 +18,13 @@ export interface Station {
   id: string
   name: string
   lineId: string
-  /** 이 역이 지나는 순서 index */
-  order: number
+  /** 이 역이 지나는 순서 index (리치 역만; 디렉터리 역은 없음) */
+  order?: number
   /** 환승 노선 id 목록 */
   transfers?: string[]
+  /** 위경도(WGS84) — SK 경로검색 좌표 입력용 */
+  lat?: number
+  lng?: number
 }
 
 /** 승강장 구조물 위치 — 특정 칸 쏠림의 원인 */
@@ -96,6 +99,8 @@ export interface RoutePlan {
 export interface CrowdEvent {
   id: string
   type: 'concert' | 'sports' | 'festival'
+  /** 세부 분류 — 아이콘 선택용. 스포츠는 "KBO"/"K리그", 문화행사는 CODENAME("전시/미술" 등) */
+  category?: string
   title: string
   venue: string
   stationName: string

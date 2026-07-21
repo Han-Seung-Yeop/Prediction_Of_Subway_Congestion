@@ -6,7 +6,7 @@ import type { RouteLeg, RoutePlan } from '../data/types'
 import { buildAdjacency, getStation, type GraphEdge } from '../data/subway'
 
 export interface RouteProvider {
-  findRoutes(fromId: string, toId: string, departAt: Date): RoutePlan[]
+  findRoutes(fromId: string, toId: string, departAt: Date): Promise<RoutePlan[]>
 }
 
 /** 환승 1회의 체감 페널티(분 환산) — 종합 랭킹에서 환승을 억제 */
@@ -22,7 +22,7 @@ interface Crumb {
  *   cost = 승차분 + 환승도보분 + (환승 1회당 페널티)
  */
 export const mockRouteProvider: RouteProvider = {
-  findRoutes(fromId, toId) {
+  async findRoutes(fromId, toId) {
     if (fromId === toId) return []
     const adj = buildAdjacency()
 
@@ -91,7 +91,7 @@ function buildPlan(fromId: string, chain: Crumb[], score: number): RoutePlan | n
       lineId: board.lineId,
       boardStationId: board.id,
       alightStationId: alight.id,
-      direction: alight.order > board.order ? 'up' : 'down',
+      direction: (alight.order ?? 0) > (board.order ?? 0) ? 'up' : 'down',
       stationIds: [...run],
       numStations: run.length - 1,
       rideMinutes,

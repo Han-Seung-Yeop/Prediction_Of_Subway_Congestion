@@ -116,14 +116,18 @@ export interface PredictionResult {
 export function predictCongestion(
   stationId: string,
   hour: number,
+  /** 라이브 이벤트 boost(%p) 오버라이드. 주면 이 값을 쓰고, 없으면 정적 EVENTS로 계산 */
+  eventBoostOverride?: number,
 ): PredictionResult {
   const base = baseCongestionByHour(hour)
   const weights = carWeights(stationId)
   const station = getStation(stationId)
 
-  // 이벤트 반영: 해당 역 이벤트 delta 중 최댓값을 반영
-  const events = station ? eventsForStation(station.name) : []
-  const eventBoost = events.reduce((m, e) => Math.max(m, e.delta), 0)
+  // 이벤트 반영: 오버라이드(라이브)가 있으면 그 값, 없으면 정적 EVENTS의 delta 최댓값
+  const eventBoost =
+    eventBoostOverride != null
+      ? eventBoostOverride
+      : (station ? eventsForStation(station.name) : []).reduce((m, e) => Math.max(m, e.delta), 0)
 
   const cars: CarCongestion[] = []
   for (let c = 1; c <= CAR_COUNT; c++) {

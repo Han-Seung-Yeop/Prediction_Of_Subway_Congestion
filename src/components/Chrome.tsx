@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react'
 import type { Line, Station, Direction, AppMode } from '../data/types'
+import { arrivalProvider } from '../services'
+import type { ArrivalInfo } from '../services/arrival'
 import { IconTrain, IconCube, IconStation } from './icons'
 
 export function ModeTabs({
@@ -61,10 +64,29 @@ interface ArrivalBannerProps {
 }
 
 export function ArrivalBanner({ line, station, direction }: ArrivalBannerProps) {
-  // 결정론적 도착 시간 목업
-  const seconds = 30 + (station.name.charCodeAt(0) % 5) * 30
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
+  const [info, setInfo] = useState<ArrivalInfo | null>(null)
+
+  // 선택된 (노선·역·방향) 이 바뀌면 도착정보를 다시 조회. 최신 요청만 반영(취소 플래그).
+  useEffect(() => {
+    let cancelled = false
+    setInfo(null)
+    arrivalProvider
+      .next({ line, station, direction })
+      .then((result) => {
+        if (!cancelled) setInfo(result)
+      })
+      .catch(() => {
+        if (!cancelled) setInfo(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [line, station, direction])
+
+  const live = info?.source === 'seoul-realtime'
+  const seconds = info?.seconds ?? null
+  const m = seconds != null ? Math.floor(seconds / 60) : 0
+  const s = seconds != null ? seconds % 60 : 0
 
   return (
     <div className="mx-4 flex items-center gap-3 rounded-xl bg-ink-900 px-3.5 py-2.5 ring-1 ring-white/5">
@@ -78,15 +100,31 @@ export function ArrivalBanner({ line, station, direction }: ArrivalBannerProps) 
         <div className="truncate text-[13px] font-semibold text-white">
           {direction.toward}
         </div>
-        <div className="text-[11px] text-slate-500">{station.name} 승강장</div>
+        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+          {live && (
+            <span className="inline-flex items-center gap-1 font-semibold text-brand-400">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-400" />
+              실시간
+            </span>
+          )}
+          <span className="truncate">{live && info?.message ? info.message : `${station.name} 승강장`}</span>
+        </div>
       </div>
       <div className="flex items-baseline gap-1 text-right">
-        <span className="text-[11px] text-slate-500">약</span>
-        <span className="text-lg font-extrabold tabular-nums text-brand-400">
-          {m > 0 ? `${m}분 ` : ''}
-          {s}초
-        </span>
-        <span className="text-[11px] text-slate-500">후</span>
+        {info == null ? (
+          <span className="text-sm font-semibold text-slate-500">조회 중…</span>
+        ) : seconds == null ? (
+          <span className="text-base font-extrabold text-brand-400">곧 도착</span>
+        ) : (
+          <>
+            <span className="text-[11px] text-slate-500">약</span>
+            <span className="text-lg font-extrabold tabular-nums text-brand-400">
+              {m > 0 ? `${m}분 ` : ''}
+              {s}초
+            </span>
+            <span className="text-[11px] text-slate-500">후</span>
+          </>
+        )}
       </div>
     </div>
   )

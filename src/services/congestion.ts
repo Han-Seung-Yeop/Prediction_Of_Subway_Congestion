@@ -26,7 +26,7 @@ export interface BoardingInput {
 }
 
 export interface CongestionProvider {
-  forBoarding(input: BoardingInput): RouteCongestion
+  forBoarding(input: BoardingInput): Promise<RouteCongestion>
 }
 
 /**
@@ -34,7 +34,7 @@ export interface CongestionProvider {
  *   중간 구간: 환승 통로 > 계단 순
  *   마지막 구간: 출구 > 계단 순
  */
-function optimalCarForAlight(alightStationId: string, isFinalLeg: boolean) {
+export function optimalCarForAlight(alightStationId: string, isFinalLeg: boolean) {
   const features = featuresForStation(alightStationId)
   const priority: Array<{ type: string; label: string }> = isFinalLeg
     ? [
@@ -53,7 +53,7 @@ function optimalCarForAlight(alightStationId: string, isFinalLeg: boolean) {
 }
 
 export const mockCongestionProvider: CongestionProvider = {
-  forBoarding({ boardStationId, alightStationId, hour, isFinalLeg }) {
+  async forBoarding({ boardStationId, alightStationId, hour, isFinalLeg }) {
     // 진입역(=타는 역) 기준 칸별 혼잡도 추정
     const pred = predictCongestion(boardStationId, hour)
     const optimal = optimalCarForAlight(alightStationId, isFinalLeg)

@@ -95,7 +95,11 @@ export function OdsaySubwayMap({ apiKey, onPickStart, onPickEnd }: OdsaySubwayMa
   return (
     <div className="odsay-subway-map mx-4 overflow-hidden rounded-2xl bg-ink-900/80 ring-1 ring-white/5">
       {/* SDK 가 역명 라벨에 fill="#333333" 을 직접 박아 넣어(어두운 배경에서 안 보임), CSS 로 덮어쓴다 */}
-      <style>{`.odsay-subway-map svg text { fill: #fff !important; }`}</style>
+      {/* 경로 선택 시 SDK 가 rect[id$="-mask"] 에 fill="#fff" opacity="0.87" 을 박아 넣어 배경을 과하게 뿌옇게 만든다 */}
+      <style>{`
+        .odsay-subway-map svg text { fill: #fff !important; }
+        .odsay-subway-map svg rect[id$="-mask"] { opacity: 0.45 !important; }
+      `}</style>
       <div ref={containerRef} className="h-[420px] w-full" />
       {status === 'loading' && (
         <div className="flex items-center justify-center gap-2 py-3 text-[12px] text-slate-500">

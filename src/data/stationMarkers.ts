@@ -130,10 +130,36 @@ const EULJIRO_MARKERS: Marker[] = [
   { id: 'csc2', kind: 'poi', label: '고객안내센터', icon: 'i', color: '#2f6fed', n: [-0.2401, 0.1188, -0.7279] },
 ]
 
+// 성수역 — public/markers_1.json 좌표를 그대로 사용(이미 Y-up 변환 + Seongsu.glb 로컬
+//   좌표계와 일치). half=1 로 두면 norm() 이 항등 변환이 되어 원본 좌표를 그대로 배치한다.
+//   "N번" 타입(1~4번)은 출구, 나머지(elevator/toilet/turnstile/Customer Service Center)는
+//   시설 배지로 숫자 없이 이름만 표시.
+const SEONGSU_HALF = { x: 1, y: 1, z: 1 }
+
+const SEONGSU_MARKERS: Marker[] = [
+  { id: '1번', kind: 'exit', label: '1', n: [-0.6487, -0.209, -0.2259] },
+  { id: '2번', kind: 'exit', label: '2', n: [0.8484, -0.2079, -0.2131] },
+  { id: '3번', kind: 'exit', label: '3', n: [0.8459, -0.2017, 0.2355] },
+  { id: '4번', kind: 'exit', label: '4', n: [-0.6508, -0.205, 0.2114] },
+
+  { id: 'elevator1', kind: 'facility', label: '엘리베이터', icon: '🛗', color: '#f5c518', n: [0.5016, 0.0027, -0.2093] },
+  { id: 'elevator2', kind: 'facility', label: '엘리베이터', icon: '🛗', color: '#f5c518', n: [0.5092, 0.0135, 0.2287] },
+  { id: 'elevator3', kind: 'facility', label: '엘리베이터', icon: '🛗', color: '#f5c518', n: [-0.0445, 0.2581, 0.129] },
+  { id: 'elevator4', kind: 'facility', label: '엘리베이터', icon: '🛗', color: '#f5c518', n: [-0.1142, 0.256, -0.1162] },
+
+  { id: 'toilet', kind: 'facility', label: '화장실', icon: '🚻', color: '#0ea5e9', n: [-0.2565, -0.0155, 0.1524] },
+
+  { id: 'turnstile1', kind: 'facility', label: '개찰구', icon: '🎫', color: '#64748b', n: [0.7366, -0.0006, -0.0049] },
+  { id: 'turnstile2', kind: 'facility', label: '개찰구', icon: '🎫', color: '#64748b', n: [-0.6934, -0.0157, 0.004] },
+
+  { id: 'csc', kind: 'poi', label: '고객안내센터', icon: 'i', color: '#2f6fed', n: [0.0961, -0.0039, -0.0891] },
+]
+
 export const STATION_MARKER_SETS: Record<string, StationMarkerSet> = {
   's-anguk': { half: ANGUK_HALF, markers: ANGUK_MARKERS },
   's-euljiro3-l3': { half: EULJIRO_HALF, markers: EULJIRO_MARKERS },
   's-euljiro3-l2': { half: EULJIRO_HALF, markers: EULJIRO_MARKERS },
+  's-seongsu': { half: SEONGSU_HALF, markers: SEONGSU_MARKERS },
 }
 
 export function getMarkerSet(stationId: string | null | undefined): StationMarkerSet {

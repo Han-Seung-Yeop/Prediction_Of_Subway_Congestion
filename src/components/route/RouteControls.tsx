@@ -17,6 +17,7 @@ interface RouteInputProps {
   onHour: (h: number) => void
   onFind: () => void
   canFind: boolean
+  finding?: boolean
 }
 
 export function RouteInput({
@@ -31,6 +32,7 @@ export function RouteInput({
   onHour,
   onFind,
   canFind,
+  finding = false,
 }: RouteInputProps) {
   const [wheelOpen, setWheelOpen] = useState(false)
   return (
@@ -115,10 +117,13 @@ export function RouteInput({
 
       <button
         onClick={onFind}
-        disabled={!canFind}
-        className="rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 py-2.5 text-[14px] font-extrabold text-ink-950 shadow-lg shadow-brand-500/20 transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+        disabled={!canFind || finding}
+        className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 py-2.5 text-[14px] font-extrabold text-ink-950 shadow-lg shadow-brand-500/20 transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
       >
-        경로 찾기
+        {finding && (
+          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-ink-950/40 border-t-ink-950" />
+        )}
+        {finding ? '경로 찾는 중…' : '경로 찾기'}
       </button>
     </div>
   )
